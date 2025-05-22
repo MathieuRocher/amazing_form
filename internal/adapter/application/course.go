@@ -6,6 +6,7 @@ import (
 
 type CourseUsecaseInterface interface {
 	FindAll() ([]domain.Course, error)
+	FindAllWithPagination(p int, l int) ([]domain.Course, error)
 	FindByID(id uint) (*domain.Course, error)
 	Create(user *domain.Course) error
 	Update(user *domain.Course) error
@@ -14,6 +15,7 @@ type CourseUsecaseInterface interface {
 
 type CourseRepositoryInterface interface {
 	FindAll() ([]domain.Course, error)
+	FindAllWithPagination(p int, l int) ([]domain.Course, error)
 	FindByID(id uint) (*domain.Course, error)
 	Create(course *domain.Course) error
 	Update(course *domain.Course) error
@@ -32,6 +34,10 @@ func NewCourseUsecase(courseRepository CourseRepositoryInterface) CourseUsecaseI
 
 func (u *CourseUsecase) FindAll() ([]domain.Course, error) {
 	return u.courseRepository.FindAll()
+}
+
+func (u *CourseUsecase) FindAllWithPagination(page int, limit int) ([]domain.Course, error) {
+	return u.courseRepository.FindAllWithPagination(page, limit)
 }
 
 func (u *CourseUsecase) FindByID(id uint) (*domain.Course, error) {

@@ -24,19 +24,41 @@ func NewCourseHandler(uh application.CourseUsecaseInterface) *CourseHandler {
 func (h *CourseHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	group := rg.Group("/courses")
 	{
-		group.GET("‡", h.GetCourses)
-		group.POST("‡", h.CreateCourse)
-		group.GET("‡:id", h.GetCourseByID)
-		group.PUT("‡:id", h.UpdateCourseByID)
-		group.DELETE("‡:id", h.DeleteCourseByID)
+		group.GET("", h.GetCourses)
+		group.POST("", h.CreateCourse)
+		group.GET(":id", h.GetCourseByID)
+		group.PUT(":id", h.UpdateCourseByID)
+		group.DELETE(":id", h.DeleteCourseByID)
 
 	}
 }
 
 func (h *CourseHandler) GetCourses(c *gin.Context) {
-	forms, _ := h.useCase.FindAll()
+	// Récupération des query params
+	pageStr := c.Query("page")
+	limitStr := c.Query("limit")
+	var (
+		courses []domain.Course
+		err     error
+	)
+
+	if pageStr != "" && limitStr != "" {
+		page, err1 := strconv.Atoi(pageStr)
+		limit, err2 := strconv.Atoi(limitStr)
+
+		if err1 == nil && err2 == nil {
+			// Appel avec pagination
+			courses, err = h.useCase.FindAllWithPagination(page, limit)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+		}
+	} else {
+		courses, _ = h.useCase.FindAll()
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": forms,
+		"message": courses,
 	})
 }
 

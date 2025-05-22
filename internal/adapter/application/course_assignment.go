@@ -6,6 +6,7 @@ import (
 
 type CourseAssignmentUseCaseInterface interface {
 	FindAll() ([]domain.CourseAssignment, error)
+	FindAllWithPagination(p int, l int) ([]domain.CourseAssignment, error)
 	FindByID(id uint) (*domain.CourseAssignment, error)
 	Create(q *domain.CourseAssignment) error
 	Update(q *domain.CourseAssignment) error
@@ -14,6 +15,7 @@ type CourseAssignmentUseCaseInterface interface {
 
 type CourseAssignmentRepositoryInterface interface {
 	FindAll() ([]domain.CourseAssignment, error)
+	FindAllWithPagination(p int, l int) ([]domain.CourseAssignment, error)
 	FindByID(id uint) (*domain.CourseAssignment, error)
 	Create(courseAssignment *domain.CourseAssignment) error
 	Update(courseAssignment *domain.CourseAssignment) error
@@ -30,6 +32,10 @@ func NewCourseAssignmentUseCase(r CourseAssignmentRepositoryInterface) CourseAss
 
 func (uc *CourseAssignmentUseCase) FindAll() ([]domain.CourseAssignment, error) {
 	return uc.repo.FindAll()
+}
+
+func (uc *CourseAssignmentUseCase) FindAllWithPagination(page int, limit int) ([]domain.CourseAssignment, error) {
+	return uc.repo.FindAllWithPagination(page, limit)
 }
 
 func (uc *CourseAssignmentUseCase) FindByID(id uint) (*domain.CourseAssignment, error) {

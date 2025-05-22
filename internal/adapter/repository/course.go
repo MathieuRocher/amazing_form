@@ -38,6 +38,30 @@ func (r *CourseRepository) FindAll() ([]domain.Course, error) {
 	return domainCourses, nil
 }
 
+func (r *CourseRepository) FindAllWithPagination(page int, limit int) ([]domain.Course, error) {
+	var repoCourses []Course
+
+	offset := (page - 1) * limit
+	if offset < 0 {
+		offset = 0
+	}
+
+	if err := r.db.
+		Limit(limit).
+		Offset(offset).
+		Find(&repoCourses).Error; err != nil {
+		return nil, err
+	}
+
+	var domainCourses []domain.Course
+	for _, repoCourse := range repoCourses {
+		domainCourse := repoCourse.ToDomain()
+		domainCourses = append(domainCourses, *domainCourse)
+	}
+
+	return domainCourses, nil
+}
+
 func (r *CourseRepository) FindByID(id uint) (*domain.Course, error) {
 	var obj Course
 	if err := r.db.First(&obj, id).Error; err != nil {
