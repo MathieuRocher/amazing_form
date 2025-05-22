@@ -24,11 +24,11 @@ func NewCourseHandler(uh application.CourseUsecaseInterface) *CourseHandler {
 func (h *CourseHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	group := rg.Group("/courses")
 	{
-		group.GET("‡", h.GetCourses)
-		group.POST("‡", h.CreateCourse)
-		group.GET("‡:id", h.GetCourseByID)
-		group.PUT("‡:id", h.UpdateCourseByID)
-		group.DELETE("‡:id", h.DeleteCourseByID)
+		group.GET("", h.GetCourses)
+		group.POST("", h.CreateCourse)
+		group.GET(":id", h.GetCourseByID)
+		group.PUT(":id", h.UpdateCourseByID)
+		group.DELETE(":id", h.DeleteCourseByID)
 
 	}
 }
