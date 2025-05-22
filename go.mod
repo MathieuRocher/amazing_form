@@ -5,13 +5,14 @@ go 1.24.3
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-playground/validator/v10 v10.26.0
+	github.com/joho/godotenv v1.5.1
 	gorm.io/gorm v1.26.1
 )
 
 require github.com/go-sql-driver/mysql v1.7.0 // indirect
 
 require (
-	github.com/MathieuRocher/amazing_domain v0.0.0-20250522080306-a7f6690c5460 // indirect
+	github.com/MathieuRocher/amazing_domain v0.0.0-20250522080306-a7f6690c5460
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
