@@ -5,8 +5,6 @@ import (
 	"amazing_form/internal/adapter/handler"
 	"amazing_form/internal/adapter/repository"
 	"amazing_form/internal/infrastructure/database"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,12 +14,7 @@ func main() {
 	// c := cache.New(10*time.Minute, 10*time.Minute)
 	// service.NewCacheService(c)
 	// Importation des routes
-	api := router.Group("/api")
-	api.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "hello world",
-		})
-	})
+	api := router.Group("/")
 
 	// FORM
 	formRepository := repository.NewFormRepository()
@@ -46,5 +39,9 @@ func main() {
 	courseAssignmentUseCase := application.NewCourseAssignmentUseCase(courseAssignmentRepository)
 	courseAssignmentHandler := handler.NewCourseAssignmentHandler(courseAssignmentUseCase)
 	courseAssignmentHandler.RegisterRoutes(api)
-	router.Run("localhost:8081")
+
+	err := router.Run("localhost:8081")
+	if err != nil {
+		return
+	}
 }

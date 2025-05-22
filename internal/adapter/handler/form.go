@@ -103,10 +103,10 @@ func (h *FormHandler) DeleteFormByID(c *gin.Context) {
 func (h *FormHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	group := rg.Group("/forms")
 	{
-		group.GET("/", h.GetForms)
-		group.POST("/", h.CreateForm)
-		group.GET("/:id", h.GetFormByID)
-		group.PUT("/:id", h.UpdateFormByID)
-		group.DELETE("/:id", h.DeleteFormByID)
+		group.GET("", h.GetForms)
+		group.POST("", h.CreateForm)
+		group.GET(":id", h.GetFormByID)
+		group.PUT(":id", h.UpdateFormByID)
+		group.DELETE(":id", h.DeleteFormByID)
 	}
 }

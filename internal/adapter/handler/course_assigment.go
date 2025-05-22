@@ -95,10 +95,10 @@ func (h *CourseAssignmentHandler) DeleteCourseAssignmentByID(c *gin.Context) {
 func (h *CourseAssignmentHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	group := rg.Group("/course-assignments")
 	{
-		group.GET("/", h.GetCourseAssignments)
-		group.GET("/:id", h.GetCourseAssignmentByID)
-		group.POST("/", h.CreateCourseAssignment)
-		group.PUT("/:id", h.UpdateCourseAssignmentByID)
-		group.DELETE("/:id", h.DeleteCourseAssignmentByID)
+		group.GET("", h.GetCourseAssignments)
+		group.GET(":id", h.GetCourseAssignmentByID)
+		group.POST("", h.CreateCourseAssignment)
+		group.PUT(":id", h.UpdateCourseAssignmentByID)
+		group.DELETE(":id", h.DeleteCourseAssignmentByID)
 	}
 }
