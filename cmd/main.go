@@ -7,17 +7,11 @@ import (
 	"amazing_form/internal/infrastructure/database"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"log"
 	"os"
 )
 
 func main() {
 	router := gin.Default()
-
-	e := godotenv.Load()
-	if e != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	database.InitDB()
 	_ = database.DB.AutoMigrate(&repository.Form{}, &repository.FormQuestion{}, &repository.Course{}, &repository.CourseAssignment{})
@@ -51,12 +45,16 @@ func main() {
 	courseAssignmentHandler := handler.NewCourseAssignmentHandler(courseAssignmentUseCase)
 	courseAssignmentHandler.RegisterRoutes(api)
 
-	formPort := os.Getenv("FORM_PORT")
-	if formPort == "" {
-		log.Fatal("FORM_PORT must be set in environment")
+	reviewPort := os.Getenv("FORM_PORT")
+	if reviewPort == "" {
+		_ = godotenv.Load(".env") // charge localement si pas défini
+		reviewPort = os.Getenv("FORM_PORT")
+		if reviewPort == "" {
+			reviewPort = "8081" // fallback si tout échoue
+		}
 	}
 
-	err := router.Run("localhost:" + formPort)
+	err := router.Run("0.0.0.0:" + reviewPort)
 	if err != nil {
 		return
 	}
