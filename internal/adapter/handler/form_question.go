@@ -18,7 +18,29 @@ func NewFormQuestionHandler(uc application.FormQuestionUseCaseInterface) *FormQu
 }
 
 func (h *FormQuestionHandler) GetFormQuestions(c *gin.Context) {
-	formQuestions, _ := h.useCase.FindAll()
+	// Récupération des query params
+	pageStr := c.Query("page")
+	limitStr := c.Query("limit")
+	var (
+		formQuestions []domain.FormQuestion
+		err           error
+	)
+
+	if pageStr != "" && limitStr != "" {
+		page, err1 := strconv.Atoi(pageStr)
+		limit, err2 := strconv.Atoi(limitStr)
+
+		if err1 == nil && err2 == nil {
+			// Appel avec pagination
+			formQuestions, err = h.useCase.FindAllWithPagination(page, limit)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+		}
+	} else {
+		formQuestions, _ = h.useCase.FindAll()
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": formQuestions,

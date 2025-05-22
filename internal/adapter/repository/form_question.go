@@ -59,6 +59,30 @@ func (r *FormQuestionRepository) FindAll() ([]domain.FormQuestion, error) {
 	return domainFormQuestions, nil
 }
 
+func (r *FormQuestionRepository) FindAllWithPagination(page int, limit int) ([]domain.FormQuestion, error) {
+	var repoFormQuestions []FormQuestion
+
+	offset := (page - 1) * limit
+	if offset < 0 {
+		offset = 0
+	}
+
+	if err := r.db.
+		Limit(limit).
+		Offset(offset).
+		Find(&repoFormQuestions).Error; err != nil {
+		return nil, err
+	}
+
+	var domainFormQuestions []domain.FormQuestion
+	for _, repoFormQuestion := range repoFormQuestions {
+		domainFormQuestion := repoFormQuestion.ToDomain()
+		domainFormQuestions = append(domainFormQuestions, *domainFormQuestion)
+	}
+
+	return domainFormQuestions, nil
+}
+
 func (r *FormQuestionRepository) FindByID(id uint) (*domain.FormQuestion, error) {
 	var obj FormQuestion
 	if err := r.db.First(&obj, id).Error; err != nil {

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
+	domain "github.com/MathieuRocher/amazing_domain"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
@@ -19,8 +21,29 @@ func NewFormHandler(uc application.FormUseCaseInterface) *FormHandler {
 }
 
 func (h *FormHandler) GetForms(c *gin.Context) {
-	forms, _ := h.useCase.FindAll()
+	// Récupération des query params
+	pageStr := c.Query("page")
+	limitStr := c.Query("limit")
+	var (
+		forms []domain.Form
+		err   error
+	)
 
+	if pageStr != "" && limitStr != "" {
+		page, err1 := strconv.Atoi(pageStr)
+		limit, err2 := strconv.Atoi(limitStr)
+
+		if err1 == nil && err2 == nil {
+			// Appel avec pagination
+			forms, err = h.useCase.FindAllWithPagination(page, limit)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+		}
+	} else {
+		forms, _ = h.useCase.FindAll()
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": forms,
 	})

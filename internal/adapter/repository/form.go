@@ -37,6 +37,32 @@ func (r *FormRepository) FindAll() ([]domain.Form, error) {
 	return domainForms, nil
 }
 
+func (r *FormRepository) FindAllWithPagination(page int, limit int) ([]domain.Form, error) {
+	var repoForms []Form
+
+	offset := (page - 1) * limit
+	if offset < 0 {
+		offset = 0
+	}
+
+	// Récupération avec préchargement des relations et pagination
+	if err := r.db.Preload("FormQuestions").
+		Limit(limit).
+		Offset(offset).
+		Find(&repoForms).Error; err != nil {
+		return nil, err
+	}
+
+	var domainForms []domain.Form
+	for _, repoForm := range repoForms {
+		domainForm := repoForm.ToDomain()
+		domainForms = append(domainForms, *domainForm)
+	}
+
+	return domainForms, nil
+
+}
+
 func (r *FormRepository) FindByID(id uint) (*domain.Form, error) {
 	var obj Form
 	if err := r.db.Preload("FormQuestions").First(&obj, id).Error; err != nil {

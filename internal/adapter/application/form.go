@@ -6,6 +6,7 @@ import (
 
 type FormUseCaseInterface interface {
 	FindAll() ([]domain.Form, error)
+	FindAllWithPagination(p int, l int) ([]domain.Form, error)
 	FindByID(id uint) (*domain.Form, error)
 	Create(q *domain.Form) error
 	Update(q *domain.Form) error
@@ -14,6 +15,7 @@ type FormUseCaseInterface interface {
 
 type FormRepositoryInterface interface {
 	FindAll() ([]domain.Form, error)
+	FindAllWithPagination(p int, l int) ([]domain.Form, error)
 	FindByID(id uint) (*domain.Form, error)
 	Create(form *domain.Form) error
 	Update(form *domain.Form) error
@@ -30,6 +32,10 @@ func NewFormUseCase(r FormRepositoryInterface) FormUseCaseInterface {
 
 func (uc *FormUseCase) FindAll() ([]domain.Form, error) {
 	return uc.repo.FindAll()
+}
+
+func (uc *FormUseCase) FindAllWithPagination(page int, limit int) ([]domain.Form, error) {
+	return uc.repo.FindAllWithPagination(page, limit)
 }
 
 func (uc *FormUseCase) FindByID(id uint) (*domain.Form, error) {
