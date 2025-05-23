@@ -14,7 +14,7 @@ func main() {
 	router := gin.Default()
 
 	database.InitDB()
-	_ = database.DB.AutoMigrate(&repository.Form{}, &repository.FormQuestion{}, &repository.Course{}, &repository.CourseAssignment{})
+	_ = database.DB.AutoMigrate(&repository.Course{}, &repository.CourseAssignment{}, &repository.Form{}, &repository.FormQuestion{})
 
 	// c := cache.New(10*time.Minute, 10*time.Minute)
 	// service.NewCacheService(c)

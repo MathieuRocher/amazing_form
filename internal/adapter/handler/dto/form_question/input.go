@@ -1,4 +1,4 @@
-package form
+package form_question
 
 import (
 	domain "github.com/MathieuRocher/amazing_domain"

@@ -15,6 +15,7 @@ type CourseAssignment struct {
 	TrainerID    uint
 
 	Course Course
+	Forms  []Form `gorm:"foreignKey:CourseAssignmentId"`
 }
 
 type CourseAssignmentRepository struct {

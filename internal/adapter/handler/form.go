@@ -21,36 +21,66 @@ func NewFormHandler(uc application.FormUseCaseInterface) *FormHandler {
 }
 
 func (h *FormHandler) GetForms(c *gin.Context) {
-	// Récupération des query params
+	// Query params
 	pageStr := c.Query("page")
 	limitStr := c.Query("limit")
+	courseIDStr := c.Query("course_id")
+	classIDStr := c.Query("class_id")
+
 	var (
-		forms []domain.Form
-		err   error
+		forms    []domain.Form
+		err      error
+		page     *int
+		limit    *int
+		courseID *int
+		classID  *int
 	)
 
-	if pageStr != "" && limitStr != "" {
-		page, err1 := strconv.Atoi(pageStr)
-		limit, err2 := strconv.Atoi(limitStr)
-
-		if err1 == nil && err2 == nil {
-			// Appel avec pagination
-			forms, err = h.useCase.FindAllWithPagination(page, limit)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
+	// Parse optional filters
+	if courseIDStr != "" {
+		id, err := strconv.Atoi(courseIDStr)
+		if err == nil {
+			courseID = &id
 		}
-	} else {
-		forms, _ = h.useCase.FindAll()
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": forms,
-	})
+
+	if classIDStr != "" {
+		id, err := strconv.Atoi(classIDStr)
+		if err == nil {
+			classID = &id
+		}
+	}
+
+	if pageStr != "" && limitStr != "" {
+		p, err1 := strconv.Atoi(pageStr)
+		l, err2 := strconv.Atoi(limitStr)
+		if err1 == nil && err2 == nil {
+			page = &p
+			limit = &l
+		}
+	}
+
+	if classID != nil || courseID != nil || page != nil || limit != nil {
+		forms, err = h.useCase.FindAllFiltered(courseID, classID, page, limit)
+	} else {
+		forms, err = h.useCase.FindAll()
+	}
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var outputs []form.FormOutput
+	for _, f := range forms {
+		outputs = append(outputs, *form.FormOutputFromDomain(&f))
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": outputs})
 }
 
 func (h *FormHandler) CreateForm(c *gin.Context) {
-	var payload form.CreateFormInput // TODO - Remplacer le domain.Form par handler.Form
+	var payload form.FormInput // TODO - Remplacer le domain.Form par handler.Form
 	err := c.Bind(&payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -75,13 +105,13 @@ func (h *FormHandler) CreateForm(c *gin.Context) {
 func (h *FormHandler) GetFormByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	form, err := h.useCase.FindByID(uint(id))
+	formDomain, err := h.useCase.FindByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "form not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"form": form})
+	c.JSON(http.StatusOK, gin.H{"form": form.FormOutputFromDomain(formDomain)})
 	return
 }
 

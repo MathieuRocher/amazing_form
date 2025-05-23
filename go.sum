@@ -1,5 +1,7 @@
-github.com/MathieuRocher/amazing_domain v0.0.0-20250522080306-a7f6690c5460 h1:bBgXgcH7NGvhPYGwqtzdarEh/Icr5AG0i7j2PVgyMGM=
-github.com/MathieuRocher/amazing_domain v0.0.0-20250522080306-a7f6690c5460/go.mod h1:tCo1kyscDkX3jI31ik479czrfM6SNcca/Aq1mgP2nGk=
+github.com/MathieuRocher/amazing_domain v0.0.0-20250523082945-b71e03734882 h1:uMj2xgC1wom8vfECO0W7AtdHBGIK/HrhlR3V0TPZ4Rk=
+github.com/MathieuRocher/amazing_domain v0.0.0-20250523082945-b71e03734882/go.mod h1:tCo1kyscDkX3jI31ik479czrfM6SNcca/Aq1mgP2nGk=
+github.com/MathieuRocher/amazing_domain v0.0.0-20250523083826-da3e87949e76 h1:pArNfJQ4AXoWn0oRUBM1cGjqhcKTm/1RzVguux8KI9g=
+github.com/MathieuRocher/amazing_domain v0.0.0-20250523083826-da3e87949e76/go.mod h1:tCo1kyscDkX3jI31ik479czrfM6SNcca/Aq1mgP2nGk=
 github.com/bytedance/sonic v1.11.6 h1:oUp34TzMlL+OY1OUWxHqsdkgC/Zfc85zGqw9siXjrc0=
 github.com/bytedance/sonic v1.11.6/go.mod h1:LysEHSvpvDySVdC2f87zGWf6CIKJcAvqab1ZaiQtds4=
 github.com/bytedance/sonic/loader v0.1.1 h1:c+e5Pt1k/cy5wMveRDyk2X4B9hF4g7an8N3zCYjJFNM=
