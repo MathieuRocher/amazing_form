@@ -63,8 +63,7 @@ func (h *CourseHandler) GetCourses(c *gin.Context) {
 }
 
 func (h *CourseHandler) CreateCourse(c *gin.Context) {
-
-	var payload course.CreateCourseInput
+	var payload course.CourseInput
 	err := c.Bind(&payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{})

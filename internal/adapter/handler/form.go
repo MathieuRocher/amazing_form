@@ -71,11 +71,16 @@ func (h *FormHandler) GetForms(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": forms})
+	var outputs []form.FormOutput
+	for _, f := range forms {
+		outputs = append(outputs, *form.FormOutputFromDomain(&f))
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": outputs})
 }
 
 func (h *FormHandler) CreateForm(c *gin.Context) {
-	var payload form.CreateFormInput // TODO - Remplacer le domain.Form par handler.Form
+	var payload form.FormInput // TODO - Remplacer le domain.Form par handler.Form
 	err := c.Bind(&payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -100,13 +105,13 @@ func (h *FormHandler) CreateForm(c *gin.Context) {
 func (h *FormHandler) GetFormByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	form, err := h.useCase.FindByID(uint(id))
+	formDomain, err := h.useCase.FindByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "form not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"form": form})
+	c.JSON(http.StatusOK, gin.H{"form": form.FormOutputFromDomain(formDomain)})
 	return
 }
 
