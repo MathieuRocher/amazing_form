@@ -21,32 +21,57 @@ func NewFormHandler(uc application.FormUseCaseInterface) *FormHandler {
 }
 
 func (h *FormHandler) GetForms(c *gin.Context) {
-	// Récupération des query params
+	// Query params
 	pageStr := c.Query("page")
 	limitStr := c.Query("limit")
+	courseIDStr := c.Query("course_id")
+	classIDStr := c.Query("class_id")
+
 	var (
-		forms []domain.Form
-		err   error
+		forms    []domain.Form
+		err      error
+		page     *int
+		limit    *int
+		courseID *int
+		classID  *int
 	)
 
-	if pageStr != "" && limitStr != "" {
-		page, err1 := strconv.Atoi(pageStr)
-		limit, err2 := strconv.Atoi(limitStr)
-
-		if err1 == nil && err2 == nil {
-			// Appel avec pagination
-			forms, err = h.useCase.FindAllWithPagination(page, limit)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
+	// Parse optional filters
+	if courseIDStr != "" {
+		id, err := strconv.Atoi(courseIDStr)
+		if err == nil {
+			courseID = &id
 		}
-	} else {
-		forms, _ = h.useCase.FindAll()
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": forms,
-	})
+
+	if classIDStr != "" {
+		id, err := strconv.Atoi(classIDStr)
+		if err == nil {
+			classID = &id
+		}
+	}
+
+	if pageStr != "" && limitStr != "" {
+		p, err1 := strconv.Atoi(pageStr)
+		l, err2 := strconv.Atoi(limitStr)
+		if err1 == nil && err2 == nil {
+			page = &p
+			limit = &l
+		}
+	}
+
+	if classID != nil || courseID != nil || page != nil || limit != nil {
+		forms, err = h.useCase.FindAllFiltered(courseID, classID, page, limit)
+	} else {
+		forms, err = h.useCase.FindAll()
+	}
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": forms})
 }
 
 func (h *FormHandler) CreateForm(c *gin.Context) {

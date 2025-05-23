@@ -5,8 +5,9 @@ import (
 )
 
 type CreateFormInput struct {
-	MotherId      *uint               `form:"mother_form_id"`
-	FormQuestions []FormQuestionInput `json:"form_questions" validate:"required,dive"`
+	MotherId           *uint               `form:"mother_form_id"`
+	CourseAssignmentId *uint               `form:"course_assignment_id"`
+	FormQuestions      []FormQuestionInput `json:"form_questions" validate:"required,dive"`
 }
 
 func (i *CreateFormInput) ToDomain() *domain.Form {
@@ -15,7 +16,8 @@ func (i *CreateFormInput) ToDomain() *domain.Form {
 		questions = append(questions, q.ToDomain())
 	}
 	return &domain.Form{
-		MotherId:      i.MotherId,
-		FormQuestions: questions,
+		MotherId:           i.MotherId,
+		CourseAssignmentId: i.CourseAssignmentId,
+		FormQuestions:      questions,
 	}
 }
